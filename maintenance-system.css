@@ -1,0 +1,46 @@
+.disabled { background-color: lightgray; color:silver; border-radius: 4px; padding: 4px 10px 4px 10px; }
+.enabled { background-color: black; color:white; border-radius: 4px; padding: 4px 10px 4px 10px; }
+
+.smallbr { font-size:15%; display: block;}
+
+.msg { color:crimson; font-style:italic; }
+.cofm-msg { color:darkgreen; font-style:italic; }
+
+.need-attention { border: 1px solid crimson; } 
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 6.5rem;            /* Footer height */
+  /* font-size: 90%; */
+}
+
+#page-container {
+  position: relative;  /* absolute;  */
+  min-height: 100vh;
+  width: 100%;
+}
+    
+#content-wrap {
+  padding-bottom: 6.5rem;    /* Footer height */
+}
+    
+.cropped-img { 
+  width: 200px; /* width of container */
+  height: 2px; /* height of container */
+  border: 1px solid black;
+  object-fit: cover;
+  object-position: 100% 50%;
+}
