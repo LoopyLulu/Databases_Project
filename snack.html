@@ -56,12 +56,15 @@
 
 <div class="container">
     <h1>Snack Allergen Form</h1>
-    <form action="/submit-your-form-endpoint" method="POST">
         <label for="snackName">Snack Name:</label>
-        <input type="text" id="snackName" name="snackName" required>
+        <form action="process_snack.php" method="POST">
+        <input type="text" id="Sname" name="snackName" required>
 
         <label for="ingredients">Ingredients:</label>
         <textarea id="ingredients" name="ingredients" required></textarea>
+
+        <label for="hasAllergens">Does this contain any allergens?</label>
+        <input type="checkbox" id="hasAllergens" name="hasAllergens" value="1">
 
         <fieldset>
             <legend>Contains allergens (check all that apply):</legend>
