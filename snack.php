@@ -5,6 +5,18 @@ require("snack-db.php");
 
 $snack_to_update = null;
 
+$list_of_snacks = getAllSnacks(); 
+$excludedAllergens = [];
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
+    foreach (['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'] as $allergen) {
+        if (!empty($_POST[$allergen])) {
+            $excludedAllergens[] = $allergen;
+        }
+    }
+    $list_of_snacks = getFilteredSnacks($excludedAllergens);
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!empty($_POST['addBtn'])) {
       $allergens = isset($_POST['allergens']) ? 1 : 0;
@@ -89,6 +101,19 @@ else {
 <div class="container">
 <h3>List of Snacks</h3>
 <div class="row justify-content-center">  
+    <h5>Show snacks that do not include the following:</h5>
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+        <?php
+        $allergens = ['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'];
+        foreach ($allergens as $allergen) {
+            echo '<div class="checkbox">';
+            echo '<label><input type="checkbox" name="' . $allergen . '" value="1"> ' . $allergen . '</label>';
+            echo '</div>';
+        }
+        ?>
+        <input type="submit" value="Filter Snacks" name="filterBtn" class="btn btn-info"/>
+    </form>
+</div>
 <table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
   <thead>
   <tr style="background-color:#B0B0B0">
