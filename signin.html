@@ -55,53 +55,14 @@
 <body>
 
 <div class="container">
-    <h1>Snack Allergen Form</h1>
-        <label for="snackName">Snack Name:</label>
-        <form action="process_snack.php" method="POST">
-        <input type="text" id="Sname" name="snackName" required>
+    <h1>Sign In</h1>
+        <label for="Username">Username:</label>
+        <form action="signin.php" method="POST">
+        <input type="text" id="username" name="Username" required>
 
-        <label for="ingredients">Ingredients:</label>
-        <textarea id="ingredients" name="ingredients" required></textarea>
+        <label for="Password">Password:</label>
+        <input type="text" id="password" name="Password" required>
 
-        <label for="hasAllergens">Does this contain any allergens?</label>
-        <input type="checkbox" id="hasAllergens" name="hasAllergens" value="1">
-
-        <fieldset>
-            <legend>Contains allergens (check all that apply):</legend>
-            <div class="checkbox-group">
-                <input type="checkbox" id="milk" name="milk" value="Milk">
-                <label for="milk">Milk</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="eggs" name="eggs" value="Eggs">
-                <label for="eggs">Eggs</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="fish" name="fish" value="Fish">
-                <label for="fish">Fish</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="shellfish" name="shellfish" value="Shellfish">
-                <label for="shellfish">Shellfish</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="treenuts" name="treenuts" value="TreeNuts">
-                <label for="treenuts">Tree nuts</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="peanuts" name="peanuts" value="Peanuts">
-                <label for="peanuts">Peanuts</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="wheat" name="wheat" value="Wheat">
-                <label for="wheat">Wheat</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="soy" name="soy" value="Soy">
-                <label for="soy">Soy</label>
-            </div>
-        </fieldset>
-        
         <input type="submit" value="Submit">
     </form>
 </div>
