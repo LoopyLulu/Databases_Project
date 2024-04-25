@@ -1,5 +1,4 @@
 <?php 
-echo "help";
 require("connect-db.php");
 require("snack-db.php");
 
