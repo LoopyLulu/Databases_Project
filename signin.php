@@ -16,14 +16,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check if the username field is empty
     if(empty(trim($_POST["Username"]))){
         $username_error_message = "Username can not be blank!";
-    } else{
+    }
+    
+    else{
         $username = trim($_POST["Username"]);
     }
     
     // Check if the password field is empty
     if(empty(trim($_POST["Password"]))){
         $password_error_message = "Password can not be empty!";
-    } else{
+    }
+    
+    else{
         $password = trim($_POST["Password"]);
     }
     
@@ -44,14 +48,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Execute the prepared statement
             if($prepared_statement->execute()){
               
-              $prepared_statement->store_result();
+                $prepared_statement->store_result();
               
-              // Check if username then password exists
-                if($prepared_statement->num_rows == 1){                    
+                // Check if username then password exists
+                if($prepared_statement->num_rows == 1){   
+
                     // Bind result variables
                     $prepared_statement->bind_result($username, $hashed_password);
+
                     if($prepared_statement->fetch()){
+
                         if(password_verify($password, $hashed_password)){
+
                             // Password is correct, so we login and start a new session
                             session_start();
                           
@@ -61,16 +69,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                           
                             // Redirect user to snack page
                             header("location: snack.php");
-                        } else{
+
+                        }
+                        
+                        else{
+
                         // Password is not valid
                         $login_error_message = "Invalid password.";
                         }
-                  }
-              } else{
+                    }
+                }
+                
+                else{
+
                     // Username is not valid
                     $login_error_message = "Invalid username.";
                 }
-        } else{
+            } 
+        
+        else{
             echo "Oops! Something went wrong. Please try again later.";
         }
 
