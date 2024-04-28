@@ -47,40 +47,40 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
               $prepared_statement->store_result();
               
               // Check if username then password exists
-              if($prepared_statement->num_rows == 1){                    
-                  // Bind result variables
-                  $prepared_statement->bind_result($username, $hashed_password);
-                  if($prepared_statement->fetch()){
-                      if(password_verify($password, $hashed_password)){
-                          // Password is correct, so we login and start a new session
-                          session_start();
+                if($prepared_statement->num_rows == 1){                    
+                    // Bind result variables
+                    $prepared_statement->bind_result($username, $hashed_password);
+                    if($prepared_statement->fetch()){
+                        if(password_verify($password, $hashed_password)){
+                            // Password is correct, so we login and start a new session
+                            session_start();
                           
-                          // Store data in session variables
-                          $_SESSION["Username"] = $username;   
-                          $_SESSION["Password"] = $password;                                                     
+                            // Store data in session variables
+                            $_SESSION["Username"] = $username;   
+                            $_SESSION["Password"] = $password;                                                     
                           
-                          // Redirect user to snack page
-                          header("location: snack.php");
-                      } else{
-                          // Password is not valid
-                          $login_error_message = "Invalid password.";
-                      }
+                            // Redirect user to snack page
+                            header("location: snack.php");
+                        } else{
+                        // Password is not valid
+                        $login_error_message = "Invalid password.";
+                        }
                   }
               } else{
-                  // Username is not valid
-                  $login_error_message = "Invalid username.";
-              }
-          } else{
-              echo "Oops! Something went wrong. Please try again later.";
-          }
+                    // Username is not valid
+                    $login_error_message = "Invalid username.";
+                }
+        } else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
 
-          // Close statement
-          $prepared_statement->close();
-      }
-  }
+        // Close statement
+        $prepared_statement->close();
+        }
+    }
   
-  // Close connection
-  $mysqli->close();
+// Close connection
+$mysqli->close();
 }
 ?>
 
