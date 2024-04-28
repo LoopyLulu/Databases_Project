@@ -34,44 +34,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($username_error_message) && empty($password_error_message)){
 
         // Search for the username and password
-        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username";
+        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
         
         if($prepared_statement = $db->prepare($select_statement)){
 
             // Bind variables to prepared statement as parameters
             $prepared_statement-> bindValue('Username:', $username);
+            $prepared_statement-> bindValue('Password:', $password);
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
               
-                    if($prepared_statement->fetch()){
+                if($prepared_statement->fetch()){
 
-                        if(password_verify($password, $hashed_password)){
+                    // Password is correct, so we login and start a new session
+                    session_start();
+                    
+                    // Store data in session variables
+                    $_SESSION["Username"] = $username;   
+                    $_SESSION["Password"] = $password;                                                     
+                    
+                    // Redirect user to snack page
+                    header("location: snack.php");
+                }
+            
+                else{
 
-                            // Password is correct, so we login and start a new session
-                            session_start();
-                          
-                            // Store data in session variables
-                            $_SESSION["Username"] = $username;   
-                            $_SESSION["Password"] = $password;                                                     
-                          
-                            // Redirect user to snack page
-                            header("location: snack.php");
-
-                        }
-                        
-                        else{
-
-                        // Password is not valid
-                        echo "Invalid password.";
-                        }
-                    }
-                
-                    else{
-
-                    // Username is not valid
-                    echo "Invalid username.";
-                    }
+                // Username is not valid
+                echo "Invalid username or password.";
+                }
             
             } 
 
