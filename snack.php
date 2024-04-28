@@ -5,15 +5,19 @@ require("snack-db.php");
 $snack_to_update = null;
 
 $list_of_snacks = getAllSnacks(); 
-$excludedAllergens = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
-    foreach (['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'] as $allergen) {
+    $excludedAllergens = [];
+    foreach (['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'] as $allergen) {
         if (!empty($_POST[$allergen])) {
             $excludedAllergens[] = $allergen;
         }
     }
-    $list_of_snacks = getFilteredSnacks($excludedAllergens);
+    if (!empty($excludedAllergens)) {
+        $list_of_snacks = getFilteredSnacks($excludedAllergens);
+    } else {
+        $list_of_snacks = getAllSnacks();
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
