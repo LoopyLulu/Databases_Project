@@ -8,7 +8,6 @@ $username = "";
 $password = "";
 $username_error_message = "";
 $password_error_message = "";
-$login_error_message = "";
  
 // After login form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -35,27 +34,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     if(empty($username_error_message) && empty($password_error_message)){
 
         // Search for the username and password
-        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username = ?";
+        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username";
         
         if($prepared_statement = $db->prepare($select_statement)){
 
-            // Set parameters
-            $parameter_username = $username;
-
             // Bind variables to prepared statement as parameters
-            $prepared_statement-> bind_param("s", $parameter_username);
+            $prepared_statement-> bindValue('Username:', $username);
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
               
-                $prepared_statement->store_result();
-              
-                // Check if username then password exists
-                if($prepared_statement->num_rows >= 1){   
-
-                    // Bind result variables
-                    $prepared_statement->bind_result($username, $hashed_password);
-
                     if($prepared_statement->fetch()){
 
                         if(password_verify($password, $hashed_password)){
@@ -75,16 +63,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         else{
 
                         // Password is not valid
-                        $login_error_message = "Invalid password.";
+                        echo "Invalid password.";
                         }
                     }
-                }
                 
-                else{
+                    else{
 
                     // Username is not valid
-                    $login_error_message = "Invalid username.";
-                }
+                    echo "Invalid username.";
+                    }
+            
             } 
 
         // Close statement
