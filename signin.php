@@ -37,13 +37,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // Search for the username and password
         $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username = ?";
         
-        if($prepared_statement = $mysqli->prepare($select_statement)){
+        if($prepared_statement = $db->prepare($select_statement)){
+
+            // Set parameters
+            $parameter_username = $username;
 
             // Bind variables to prepared statement as parameters
             $prepared_statement-> bind_param("s", $parameter_username);
-            
-            // Set parameters
-            $parameter_username = $username;
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
@@ -51,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $prepared_statement->store_result();
               
                 // Check if username then password exists
-                if($prepared_statement->num_rows == 1){   
+                if($prepared_statement->num_rows >= 1){   
 
                     // Bind result variables
                     $prepared_statement->bind_result($username, $hashed_password);
@@ -86,18 +86,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $login_error_message = "Invalid username.";
                 }
             } 
-        
-        else{
-            echo "Oops! Something went wrong. Please try again later.";
-        }
 
         // Close statement
         $prepared_statement->close();
         }
+
+        else{
+            echo "Oops! Something went wrong. Please try again later.";
+        }
     }
   
 // Close connection
-$mysqli->close();
+$db->close();
 }
 ?>
 
