@@ -1,150 +1,158 @@
-<?php 
+<?php
+// Start a session
+session_start();
+
 require("connect-db.php");
-require("snack-db.php");
 
-$snack_to_update = null;
-
-$list_of_snacks = getAllSnacks(); 
-$excludedAllergens = [];
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
-    foreach (['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'] as $allergen) {
-        if (!empty($_POST[$allergen])) {
-            $excludedAllergens[] = $allergen;
-        }
+$username = "";
+$password = "";
+$username_error_message = "";
+$password_error_message = "";
+$login_error_message = "";
+ 
+// After login form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+ 
+    // Check if the username field is empty
+    if(empty(trim($_POST["Username"]))){
+        $username_error_message = "Username can not be blank!";
+    } else{
+        $username = trim($_POST["Username"]);
     }
-    $list_of_snacks = getFilteredSnacks($excludedAllergens);
-}
+    
+    // Check if the password field is empty
+    if(empty(trim($_POST["Password"]))){
+        $password_error_message = "Password can not be empty!";
+    } else{
+        $password = trim($_POST["Password"]);
+    }
+    
+    // Check the database
+    if(empty($username_error_message) && empty($password_error_message)){
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if (!empty($_POST['addBtn'])) {
-      $allergens = isset($_POST['allergens']) ? 1 : 0;
-      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens, $_POST['allergenList']);
-      $list_of_snacks = getAllSnacks();
+        // Search for the username and password
+        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username = ?";
+        
+        if($prepared_statement = $mysqli->prepare($select_statement)){
+
+            // Bind variables to prepared statement as parameters
+            $prepared_statement-> bind_param("s", $parameter_username);
+            
+            // Set parameters
+            $parameter_username = $username;
+            
+            // Execute the prepared statement
+            if($prepared_statement->execute()){
+              
+              $prepared_statement->store_result();
+              
+              // Check if username then password exists
+              if($prepared_statement->num_rows == 1){                    
+                  // Bind result variables
+                  $prepared_statement->bind_result($username, $hashed_password);
+                  if($prepared_statement->fetch()){
+                      if(password_verify($password, $hashed_password)){
+                          // Password is correct, so we login and start a new session
+                          session_start();
+                          
+                          // Store data in session variables
+                          $_SESSION["Username"] = $username;   
+                          $_SESSION["Password"] = $password;                                                     
+                          
+                          // Redirect user to snack page
+                          header("location: snack.php");
+                      } else{
+                          // Password is not valid
+                          $login_error_message = "Invalid password.";
+                      }
+                  }
+              } else{
+                  // Username is not valid
+                  $login_error_message = "Invalid username.";
+              }
+          } else{
+              echo "Oops! Something went wrong. Please try again later.";
+          }
+
+          // Close statement
+          $prepared_statement->close();
+      }
   }
-  else if (!empty($_POST['updateBtn'])) {
-      $snack_to_update = getSnackById($_POST['snackId']);
-  }   
-  else if (!empty($_POST['cofmBtn'])) {
-     $allergens = isset($_POST['allergens']) ? 1 : 0;
-     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens, $_POST['allergenList']);
-     $list_of_snacks = getAllSnacks();
-  }
-  else if (!empty($_POST['deleteBtn'])) {
-    deleteSnack($_POST['snackId']);
-    $list_of_snacks = getAllSnacks();
-  }
-}
-else {
-  $list_of_snacks = getAllSnacks();
+  
+  // Close connection
+  $mysqli->close();
 }
 ?>
 
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">    
-  <title>Snack Allergens</title>
-  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">  
-  <link rel="stylesheet" href="snack-system.css">  
-</head>
-<body>  
-<?php include("header.php"); ?>
-
-<div class="container">
-  <div class="row g-3 mt-2">
-    <div class="col">
-      <h2>Snack Information</h2>
-    </div>  
-  </div>
-  
-  <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-    <div class='mb-3'>
-      Snack Name:
-      <input type='text' class='form-control' id='snackName' name='snackName' placeholder='Enter snack name' value="<?php if ($snack_to_update != null) echo $snack_to_update['Sname']; ?>" />
-    </div>
-    <div class='mb-3'>
-      Ingredients:
-      <input type='text' class='form-control' id='ingredients' name='ingredients' placeholder='List ingredients separated by commas' value="<?php if ($snack_to_update != null) echo $snack_to_update['ingredients']; ?>" />
-    </div>
-    <div class='mb-3'>
-      Allergens:
-      <div class="checkbox">
-        <label><input type="checkbox" name="allergens" value="1" <?php if ($snack_to_update != null && $snack_to_update['allergens']) echo 'checked'; ?>> Contains allergens</label>
-      </div>
-      Select allergens (if applicable):
-      <div class="checkbox">
-        <label><input type="checkbox" name="allergenList[]" value="Milk"> Milk</label>
-        <label><input type="checkbox" name="allergenList[]" value="Eggs"> Eggs</label>
-        <label><input type="checkbox" name="allergenList[]" value="Fish"> Fish</label>
-        <label><input type="checkbox" name="allergenList[]" value="Shellfish"> Shellfish </label>
-        <label><input type="checkbox" name="allergenList[]" value="Treenuts"> Treenuts </label>
-        <label><input type="checkbox" name="allergenList[]" value="Peanuts"> Peanuts </label>
-        <label><input type="checkbox" name="allergenList[]" value="Wheat"> Wheat </label>
-        <label><input type="checkbox" name="allergenList[]" value="Soy"> Soy </label>
-        <label><input type="checkbox" name="allergenList[]" value="Sesame"> Sesame </label>
-        <!-- Add other allergens as needed -->
-      </div>
-    </div>
-    <input type="submit" value="Add Snack" id="addBtn" name="addBtn" class="btn btn-dark" />
-    <?php if ($snack_to_update): ?>
-    <input type="submit" value="Confirm Update" id="cofmBtn" name="cofmBtn" class="btn btn-primary" />
-    <input type="hidden" value="<?php echo $snack_to_update['snack_ID']; ?>" name="cofm_snackId" />
-    <?php endif; ?>
-    <input type="reset" value="Clear form" name="clearBtn" id="clearBtn" class="btn btn-secondary" />
-  </form>
-</div>
-
-<hr/>
-<div class="container">
-<h3>List of Snacks</h3>
-<div class="row justify-content-center">  
-    <h5>Show snacks that do not include the following:</h5>
-    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-        <?php
-        $allergens = ['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'];
-        foreach ($allergens as $allergen) {
-            echo '<div class="checkbox">';
-            echo '<label><input type="checkbox" name="' . $allergen . '" value="1"> ' . $allergen . '</label>';
-            echo '</div>';
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
         }
-        ?>
-        <input type="submit" value="Filter Snacks" name="filterBtn" class="btn btn-info"/>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .checkbox-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Sign In</h1>
+        <label for="Username">Username:</label>
+        <form action="signin.php" method="POST">
+        <input type="text" id="username" name="Username" required>
+
+        <label for="Password">Password:</label>
+        <input type="text" id="password" name="Password" required>
+
+        <input type="submit" value="Submit">
     </form>
 </div>
-<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
-  <thead>
-  <tr style="background-color:#B0B0B0">
-    <th>Snack Name</th>
-    <th>Ingredients</th>        
-    <th>Allergens</th> 
-    <th>Update?</th>
-    <th>Delete?</th>
-  </tr>
-  </thead>
-  <?php foreach ($list_of_snacks as $snack): ?>
-  <tr>
-    <td><?php echo $snack['Sname']; ?></td>
-    <td><?php echo $snack['ingredients']; ?></td>
-    <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
-    <td>
-      <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="submit" value="Update" name="updateBtn" class="btn btn-primary btn-sm"/>
-        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
-      </form>
-    </td>
-    <td>
-      <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="submit" value="Delete" name="deleteBtn" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure you want to delete?')"/>
-        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
-      </form>
-    </td>
-  </tr>
-  <?php endforeach; ?>
-</table>
-</div>
-</div>
+
 </body>
 </html>
-
