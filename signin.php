@@ -39,8 +39,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         if($prepared_statement = $db->prepare($select_statement)){
 
             // Bind variables to prepared statement as parameters
-            $prepared_statement-> bindValue('Username:', $username);
-            $prepared_statement-> bindValue('Password:', $password);
+            $prepared_statement-> bindValue(':Username', $username);
+            $prepared_statement-> bindValue(':Password', $password);
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
