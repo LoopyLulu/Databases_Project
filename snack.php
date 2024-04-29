@@ -116,6 +116,7 @@ else {
     <h5>Show snacks that do not include the following:</h5>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <?php
+        $allergens = ['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'];
         foreach ($allergens as $allergen) {
             echo '<div class="checkbox">';
             echo '<label><input type="checkbox" name="' . $allergen . '" value="1"> ' . $allergen . '</label>';

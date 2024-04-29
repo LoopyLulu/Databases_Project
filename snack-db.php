@@ -69,7 +69,9 @@ function getAllSnacks()
     global $db;
 
     try {
-	$query = "select * from Project_Snack natural join Project_MakesSnacks natural join Project_Company";
+        $query = "SELECT * FROM Project_Snack PS
+                  LEFT JOIN Project_MakesSnacks PMS ON PS.snack_ID = PMS.snack_ID
+                  LEFT JOIN Project_Company PC ON PMS.company_ID = PC.company_ID";
         $statement = $db->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
