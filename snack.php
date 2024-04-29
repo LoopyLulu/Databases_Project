@@ -24,18 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!empty($_POST['addBtn'])) {
-      $allergens = isset($_POST['allergens']) ? 1 : 0;
+      $allergens2 = isset($_POST['allergens']) ? 1 : 0;
       $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
-      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
+      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens2, $allergenList);
       $list_of_snacks = getAllSnacks();
   }
   else if (!empty($_POST['updateBtn'])) {
       $snack_to_update = getSnackById($_POST['snackId']);
   }   
   else if (!empty($_POST['cofmBtn'])) {
-     $allergens = isset($_POST['allergens']) ? 1 : 0;
+     $allergens2 = isset($_POST['allergens']) ? 1 : 0;
      $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
-     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
+	
+     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens2, $allergenList);
      $list_of_snacks = getAllSnacks();
   }
   else if (!empty($_POST['deleteBtn'])) {
@@ -111,7 +112,7 @@ else {
     <h5>Show snacks that do not include the following:</h5>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <?php
-        foreach ($allergens as $allergen) {
+        foreach ($allergens as $allergen) { // has error
             echo '<div class="checkbox">';
             echo '<label><input type="checkbox" name="' . $allergen . '" value="1"> ' . $allergen . '</label>';
             echo '</div>';
@@ -133,6 +134,10 @@ else {
   <?php foreach ($list_of_snacks as $snack): ?>
   <tr>
     <td><?php echo $snack['Sname']; ?></td>
+<<<<<<< Updated upstream
+=======
+    <td><?php echo $snack['company_name']; ?></td> 
+>>>>>>> Stashed changes
     <td><?php echo $snack['ingredients']; ?></td>
     <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
     <td>

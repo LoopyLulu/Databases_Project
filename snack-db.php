@@ -5,7 +5,7 @@ function getFilteredSnacks($excludedAllergens)
 {
     global $db;
 
-    $query = "SELECT * FROM Project_Snack WHERE snack_ID NOT IN (SELECT SnackID FROM Project_ContainsAllergen WHERE ";
+    $query = "SELECT * FROM Project_Snack natural join Project_MakesSnacks natural join Project_Company WHERE snack_ID NOT IN (SELECT SnackID FROM Project_ContainsAllergen WHERE ";
 
     $conditions = [];
     foreach ($excludedAllergens as $allergen) {
@@ -17,7 +17,7 @@ function getFilteredSnacks($excludedAllergens)
 
     $query .= ")";
 
-	echo $query;
+	// echo $query;
 
     try {
         $statement = $db->prepare($query);

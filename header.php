@@ -18,9 +18,15 @@
             <li class="nav-item">
               <a class="nav-link" href="signin.php">Sign in</a>
             </li>              
+			<li class="nav-item">
+              <a class="nav-link" href="snack.php">Snacks</a>
+            </li>
           <?php  } else { ?>                    
             <li class="nav-item">                  
               <a class="nav-link" href="signout.php">Sign out</a>
+            </li>
+			<li class="nav-item">
+              <a class="nav-link" href="snack.php">Snacks</a>
             </li>
           <?php } ?>
         
