@@ -33,7 +33,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check the database
     if(empty($username_error_message) && empty($password_error_message)){
 
+        $insert_statement = "INSERT INTO Project_Login_Password (username, password) VALUES (:Username, :Password)";
+
+        $prepared_insert_statement = $db->prepare($insert_statement);
+
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        $prepared_insert_statement->bindValue(':Username', $username);
+        $prepared_insert_statement->bindValue(':Password', $hashed_password);
+
+        $prepared_insert_statement->execute();
 
         // Search for the username and password
         $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
@@ -42,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Bind variables to prepared statement as parameters
             $prepared_statement-> bindValue(':Username', $username);
-            $prepared_statement-> bindValue(':Password', $hashed_password);
+            $prepared_statement-> bindValue(':Password', $password);
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
@@ -88,7 +97,7 @@ $db->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In!</title>
+    <title>Sign Up!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
