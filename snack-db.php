@@ -159,19 +159,26 @@ function deleteSnack($snackId)
 function favoriteSnack($snackId)
 {
    global $db;
-   if (isset($_SESSION['Loggedin']) && $_SESSION['Loggedin'] == true) {
-       $query = "SELECT userID FROM Project_Login WHERE username=$_SESSION['Username']";
-       $statement = $db->prepare($query);
-       $statement->execute();
-       $userID = $statement->fetch();
-       $statement->closeCursor();
+   try {
+       if (isset($_SESSION['Loggedin']) && $_SESSION['Loggedin']) {
+           $query = "SELECT userID FROM Project_Login WHERE username=:username";
+           $statement = $db->prepare($query);
+           $statement->bindValue(':username', $_SESSION['Username']);
+           $statement->execute();
+           $userID = $statement->fetchAll();
+           $statement->closeCursor();
 
-       $query1 = "INSERT INTO Project_Snack (userID, snack_ID) VALUES (:userID, :snackID)";
-       $statement1 = $db->prepare($query1);
-       $statement1->bindValue(':userId', $_SESSION['Username']);
-       $statement1->bindValue(':snackId', $snackId);
-       $statement1->execute();
-       $statement1->closeCursor();
+           $query1 = "INSERT INTO Project_FavoritesTable (userID, snack_ID) VALUES (:userID, :snackID)";
+           $statement1 = $db->prepare($query1);
+           $statement1->bindValue(':userId', $userID);
+           $statement1->bindValue(':snackId', $snackId);
+           $statement1->execute();
+           $statement1->closeCursor();
+       }else{
+           echo('Please login to use the favorite function!');
+	}
+   }catch (PDOException $e) {
+       echo "Error: " . $e->getMessage();
    }
 }
    
