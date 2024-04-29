@@ -51,7 +51,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             // Bind variables to prepared statement as parameters
             $prepared_statement-> bindValue(':Username', $username);
-            $prepared_statement-> bindValue(':Password', $password);
+            $prepared_statement-> bindValue(':Password', $hashed_password);
             
             // Execute the prepared statement
             if($prepared_statement->execute()){
@@ -63,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     
                     // Store data in session variables
                     $_SESSION["Username"] = $username;   
-                    $_SESSION["Password"] = $password;                                                     
+                    $_SESSION["Password"] = $hashed_password;                                                     
                     
                     // Redirect user to snack page
                     header("location: snack.php");
