@@ -11,12 +11,12 @@
         <ul class="navbar-nav ms-auto">
           <!-- check if currently logged in, display Log out button 
                otherwise, display sign up and log in buttons -->
-          <?php if (!isset($_SESSION['Username'])) { ?>              
+          <?php if (!isset($_SESSION['Username'])) { ?>
             <li class="nav-item">
               <a class="nav-link" href="signup.php">Sign up</a>
             </li>              
             <li class="nav-item">
-              <a class="nav-link" href="signin.php">Sign in</a>
+              <a class="nav-link" href="snack.php">Sign in</a>
             </li>              
           <?php  } else { ?>                    
             <li class="nav-item">                  

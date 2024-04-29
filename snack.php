@@ -42,10 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     deleteSnack($_POST['snackId']);
     $list_of_snacks = getAllSnacks();
   }
-  else if (!empty($_POST['favoriteBtn'])) {
-    favoriteSnack($_POST['snackId']);
-    $list_of_snacks = getAllSnacks();
-  }
 }
 else {
   $list_of_snacks = getAllSnacks();
@@ -128,18 +124,15 @@ else {
   <thead>
   <tr style="background-color:#B0B0B0">
     <th>Snack Name</th>
-    <th>Company</th>
     <th>Ingredients</th>        
     <th>Allergens</th> 
     <th>Update?</th>
     <th>Delete?</th>
-    <th>Favorite</th>
   </tr>
   </thead>
   <?php foreach ($list_of_snacks as $snack): ?>
   <tr>
     <td><?php echo $snack['Sname']; ?></td>
-    <td><?php echo $snack['company_name']; ?></td>
     <td><?php echo $snack['ingredients']; ?></td>
     <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
     <td>
@@ -154,15 +147,11 @@ else {
         <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
       </form>
     </td>
-    <td>
-      <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="submit" value="Favorite" name="favoriteBtn" class="btn btn-warning btn-sm"/>
-        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
-      </form>
-    </td>
   </tr>
   <?php endforeach; ?>
 </table>
 </div>
 </div>
-</body> </html>
+</body>
+</html>
+
