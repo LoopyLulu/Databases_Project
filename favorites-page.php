@@ -1,6 +1,7 @@
 <?php 
 require("connect-db.php");
 require("favorites-db.php");
+require("signin.php");
 
 $list_of_snacks = getAllFavorites(); 
 
