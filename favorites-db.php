@@ -27,7 +27,7 @@ function getAllFavorites($userID)
     try {
         $query = "SELECT * FROM Project_FavoritesTable NATURAL JOIN Project_Snack WHERE userID = :userID";
         $statement = $db->prepare($query);
-		$statement->bindValue(':userID', $userID);
+	$statement->bindValue(':userID', $userID);
         $statement->execute();
         $result = $statement->fetchAll();
         $statement->closeCursor();
@@ -38,14 +38,13 @@ function getAllFavorites($userID)
     }
 }
 
-function unfavoriteSnack($userID, $snackId)
+function unfavoriteSnack($favID)
 {
    global $db;
 
-   $query1 = "DELETE FROM Project_FavoritesTable WHERE userID=:userID AND SnackID=:snackId";
+   $query1 = "DELETE FROM Project_FavoritesTable WHERE favorite_ID=:favID";
    $statement1 = $db->prepare($query1);
-   $statement1->bindValue(':snackId', $snackId);
-   $statement1->bindValue(':userID', $userID);
+   $statement1->bindValue(':favID', $favID);
    $statement1->execute();
    $statement1->closeCursor();
 

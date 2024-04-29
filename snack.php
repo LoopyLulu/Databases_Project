@@ -1,10 +1,11 @@
-<?php 
+<?php
+include("header.php"); 
 require("connect-db.php");
 require("snack-db.php");
 
 $snack_to_update = null;
 $allergens = ['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'];
-
+$loggedin = isset($_SESSION['Loggedin']) && $_SESSION['Loggedin'];
 $list_of_snacks = getAllSnacks(); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
@@ -43,6 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     deleteSnack($_POST['snackId']);
     $list_of_snacks = getAllSnacks();
   }
+  else if (!empty($_POST['favoriteBtn'])) {
+    favoriteSnack($_POST['snackId']);
+    $list_of_snacks = getAllSnacks();
+  }
 }
 else {
   $list_of_snacks = getAllSnacks();
@@ -59,11 +64,11 @@ else {
   <link rel="stylesheet" href="snack-system.css">  
 </head>
 <body>  
-<?php include("header.php"); ?>
 
 <div class="container">
   <div class="row g-3 mt-2">
     <div class="col">
+<?php if ($loggedin) { ?>
       <h2>Snack Information</h2>
     </div>  
   </div>
@@ -104,8 +109,8 @@ else {
     <input type="reset" value="Clear form" name="clearBtn" id="clearBtn" class="btn btn-secondary" />
   </form>
 </div>
-
 <hr/>
+<?php } ?>
 <div class="container">
 <h3>List of Snacks</h3>
 <div class="row justify-content-center">  
@@ -125,21 +130,24 @@ else {
   <thead>
   <tr style="background-color:#B0B0B0">
     <th>Snack Name</th>
+    <th>Company</th>
     <th>Ingredients</th>        
     <th>Allergens</th> 
+<?php if ($loggedin) { ?>
     <th>Update?</th>
     <th>Delete?</th>
+    <th>Favorite</th>
+<?php } ?>
   </tr>
   </thead>
   <?php foreach ($list_of_snacks as $snack): ?>
   <tr>
     <td><?php echo $snack['Sname']; ?></td>
-<<<<<<< Updated upstream
-=======
-    <td><?php echo $snack['company_name']; ?></td> 
->>>>>>> Stashed changes
+    <td><?php echo $snack['company_name']; ?></td>
     <td><?php echo $snack['ingredients']; ?></td>
     <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
+
+<?php if ($loggedin) { ?>
     <td>
       <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
         <input type="submit" value="Update" name="updateBtn" class="btn btn-primary btn-sm"/>
@@ -152,11 +160,16 @@ else {
         <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
       </form>
     </td>
+    <td>
+      <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+        <input type="submit" value="Favorite" name="favoriteBtn" class="btn btn-warning btn-sm"/>
+        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
+      </form>
+    </td>
   </tr>
+<?php } ?>
   <?php endforeach; ?>
 </table>
 </div>
 </div>
-</body>
-</html>
-
+</body> </html>

@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+?>
 
 <header>  
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -11,7 +15,7 @@
         <ul class="navbar-nav ms-auto">
           <!-- check if currently logged in, display Log out button 
                otherwise, display sign up and log in buttons -->
-          <?php if (!isset($_SESSION['username'])) { ?>
+          <?php if (!isset($_SESSION['Username'])) { ?>              
             <li class="nav-item">
               <a class="nav-link" href="signup.php">Sign up</a>
             </li>              
@@ -24,6 +28,8 @@
           <?php  } else { ?>                    
             <li class="nav-item">                  
               <a class="nav-link" href="signout.php">Sign out</a>
+            <li class="nav-item">                  
+              <a class="nav-link" href="favorites-page.php">My Favorites</a>
             </li>
 			<li class="nav-item">
               <a class="nav-link" href="snack.php">Snacks</a>

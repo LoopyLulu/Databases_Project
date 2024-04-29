@@ -69,7 +69,7 @@ function getAllSnacks()
     global $db;
 
     try {
-        $query = "SELECT * FROM Project_Snack";
+	$query = "select * from Project_Snack natural join Project_MakesSnacks natural join Project_Company";
         $statement = $db->prepare($query);
         $statement->execute();
         $result = $statement->fetchAll();
@@ -155,5 +155,20 @@ function deleteSnack($snackId)
    $statement2->closeCursor();
 
 }
-?>
 
+function favoriteSnack($snackId)
+{
+   global $db;
+       if (isset($_SESSION['Loggedin']) && $_SESSION['Loggedin']) {
+
+           $query1 = "INSERT INTO Project_FavoritesTable (userID, snack_ID) VALUES (:userID, :snack_ID)";
+           $statement1 = $db->prepare($query1);
+           $statement1->bindValue(':userID', $_SESSION['UserID']);
+           $statement1->bindValue(':snack_ID', $snackId);
+           $statement1->execute();
+           $statement1->closeCursor();
+       }else{
+           echo('Please login to use the favorite function!');
+	}
+}
+   
