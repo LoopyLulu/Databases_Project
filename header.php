@@ -22,6 +22,9 @@
             <li class="nav-item">                  
               <a class="nav-link" href="signout.php">Sign out</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="favorites-page.php">Favorites</a>
+            </li>
           <?php } ?>
         
         </ul>
