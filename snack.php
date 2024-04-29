@@ -5,7 +5,7 @@ require("snack-db.php");
 
 $snack_to_update = null;
 $allergens = ['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'];
-
+$loggedin = isset($_SESSION['Loggedin']) && $_SESSION['Loggedin'];
 $list_of_snacks = getAllSnacks(); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
@@ -67,6 +67,7 @@ else {
 <div class="container">
   <div class="row g-3 mt-2">
     <div class="col">
+<?php if ($loggedin) { ?>
       <h2>Snack Information</h2>
     </div>  
   </div>
@@ -107,8 +108,8 @@ else {
     <input type="reset" value="Clear form" name="clearBtn" id="clearBtn" class="btn btn-secondary" />
   </form>
 </div>
-
 <hr/>
+<?php } ?>
 <div class="container">
 <h3>List of Snacks</h3>
 <div class="row justify-content-center">  
@@ -131,9 +132,11 @@ else {
     <th>Company</th>
     <th>Ingredients</th>        
     <th>Allergens</th> 
+<?php if ($loggedin) { ?>
     <th>Update?</th>
     <th>Delete?</th>
     <th>Favorite</th>
+<?php } ?>
   </tr>
   </thead>
   <?php foreach ($list_of_snacks as $snack): ?>
@@ -142,6 +145,8 @@ else {
     <td><?php echo $snack['company_name']; ?></td>
     <td><?php echo $snack['ingredients']; ?></td>
     <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
+
+<?php if ($loggedin) { ?>
     <td>
       <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
         <input type="submit" value="Update" name="updateBtn" class="btn btn-primary btn-sm"/>
@@ -161,6 +166,7 @@ else {
       </form>
     </td>
   </tr>
+<?php } ?>
   <?php endforeach; ?>
 </table>
 </div>
