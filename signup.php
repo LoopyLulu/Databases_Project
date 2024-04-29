@@ -114,7 +114,7 @@ $db->close();
 <div class="container">
     <h1>Sign Up</h1>
         <label for="Username">Username:</label>
-        <form action="signin.php" method="POST">
+        <form action="signup.php" method="POST">
         <input type="text" id="username" name="Username" required>
 
         <label for="Password">Password:</label>
