@@ -43,47 +43,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $prepared_insert_statement->bindValue(':Password', $hashed_password);
 
         $prepared_insert_statement->execute();
+        $prepared_insert_statement->closeCursor();
 
-        // Search for the username and password
-        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
-        
-        if($prepared_statement = $db->prepare($select_statement)){
 
-            // Bind variables to prepared statement as parameters
-            $prepared_statement-> bindValue(':Username', $username);
-            $prepared_statement-> bindValue(':Password', $hashed_password);
-            
-            // Execute the prepared statement
-            if($prepared_statement->execute()){
-              
-                if($prepared_statement->fetch()){
-
-                    // Password is correct, so we login and start a new session
-                    session_start();
-                    
-                    // Store data in session variables
-                    $_SESSION["Username"] = $username;   
-                    $_SESSION["Password"] = $hashed_password;                                                     
-                    
-                    // Redirect user to snack page
-                    header("location: snack.php");
-                }
-            
-                else{
-
-                // Username is not valid
-                echo "Invalid username or password.";
-                }
-            
-            } 
-
-        // Close statement
-        $prepared_statement->close();
-        }
-
-        else{
-            echo "Oops! Something went wrong. Please try again later.";
-        }
+        header("location: signin.php");
     }
   
 // Close connection
