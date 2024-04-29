@@ -44,46 +44,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         $prepared_insert_statement->execute();
 
-        // Search for the username and password
-        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
-        
-        if($prepared_statement = $db->prepare($select_statement)){
+        $insert_statement2 = "INSERT INTO Project_Login (username) VALUES (:Username)";
 
-            // Bind variables to prepared statement as parameters
-            $prepared_statement-> bindValue(':Username', $username);
-            $prepared_statement-> bindValue(':Password', $hashed_password);
-            
-            // Execute the prepared statement
-            if($prepared_statement->execute()){
-              
-                if($prepared_statement->fetch()){
+        $prepared_insert_statement2 = $db->prepare($insert_statement2);
 
-                    // Password is correct, so we login and start a new session
-                    session_start();
-                    
-                    // Store data in session variables
-                    $_SESSION["Username"] = $username;   
-                    $_SESSION["Password"] = $hashed_password;                                                     
-                    
-                    // Redirect user to snack page
-                    header("location: snack.php");
-                }
-            
-                else{
+        $prepared_insert_statement2->bindValue(':Username', $username);
 
-                // Username is not valid
-                echo "Invalid username or password.";
-                }
-            
-            } 
+        $prepared_insert_statement2->execute();
 
-        // Close statement
-        $prepared_statement->close();
-        }
-
-        else{
-            echo "Oops! Something went wrong. Please try again later.";
-        }
+        header("location: signin.php");
     }
   
 // Close connection
@@ -151,7 +120,7 @@ $db->close();
 <div class="container">
     <h1>Sign Up</h1>
         <label for="Username">Username:</label>
-        <form action="signin.php" method="POST">
+        <form action="signup.php" method="POST">
         <input type="text" id="username" name="Username" required>
 
         <label for="Password">Password:</label>

@@ -33,48 +33,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check the database
     if(empty($username_error_message) && empty($password_error_message)){
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $get_hashed_password_statement = "SELECT password FROM Project_Login_Password WHERE username=:UsernameGet";
 
-        // Search for the username and password
-        $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
-        
-        if($prepared_statement = $db->prepare($select_statement)){
+        $prepared_get_hash_statement = db->prepare($get_hashed_password_statement);
 
-            // Bind variables to prepared statement as parameters
-            $prepared_statement-> bindValue(':Username', $username);
-            $prepared_statement-> bindValue(':Password', $hashed_password);
+        $prepared_get_hash_statement-> bindValue(':UsernameGet', $username);
+
+        $prepared_get_hash_statement->execute();
+
+        $hash_pass_from_database = $prepared_get_hash_statement->fetch();
             
-            // Execute the prepared statement
-            if($prepared_statement->execute()){
-              
-                if($prepared_statement->fetch()){
-
-                    // Password is correct, so we login and start a new session
-                    session_start();
-                    
-                    // Store data in session variables
-                    $_SESSION["Username"] = $username;   
-                    $_SESSION["Password"] = $password;                                                     
-                    
-                    // Redirect user to snack page
-                    header("location: snack.php");
-                }
+        if(password_verify($password, $hash_pass_from_database)){
+            // Password is correct, so we login and start a new session
+            session_start();
             
-                else{
-
-                // Username is not valid
-                echo "Invalid username or password.";
-                }
+            // Store data in session variables
+            $_SESSION["Username"] = $username;                                                    
             
-            } 
-
-        // Close statement
-        $prepared_statement->close();
+            // Redirect user to snack page
+            header("location: snack.php");
         }
-
+            
         else{
-            echo "Oops! Something went wrong. Please try again later.";
+            // Username is not valid
+            echo "Invalid username or password.";
         }
+
+    // Close statement
+    $prepared_get_hash_statement->close();
+    }
+
+    else{
+        echo "Oops! Something went wrong. Please try again later.";
     }
   
 // Close connection
@@ -142,7 +132,7 @@ $db->close();
 <div class="container">
     <h1>Sign In</h1>
         <label for="Username">Username:</label>
-        <form action="signin.php" method="POST">
+        <form action="snack.php" method="POST">
         <input type="text" id="username" name="Username" required>
 
         <label for="Password">Password:</label>
