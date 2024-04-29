@@ -96,34 +96,6 @@ else {
   <?php endforeach; ?>
 </table>
 
-<hr/>
-<div class="container">
-<h3>List of Snacks</h3>
-<table class="w3-table w3-bordered w3-card-4 center" style="width:100%">
-  <thead>
-  <tr style="background-color:#B0B0B0">
-    <th>Snack Name</th>
-    <th>Ingredients</th>        
-    <th>Allergens</th> 
-    <th>Favorite?</th>
-  </tr>
-  </thead>
-  <?php foreach ($list_of_snacks as $snack): ?>
-  <tr>
-    <td><?php echo $snack['Sname']; ?></td>
-    <td><?php echo $snack['ingredients']; ?></td>
-    <td><?php echo $snack['allergens'] ? 'Yes' : 'No'; ?></td>
-    <td>
-      <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="submit" value="Favorite" name="favBtn" class="btn btn-primary btn-sm"/>
-        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
-      </form>
-    </td>
-  </tr>
-  <?php endforeach; ?>
-</table>
-</div>
-</div>
 </body>
 </html>
 
