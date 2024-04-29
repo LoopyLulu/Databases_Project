@@ -1,18 +1,20 @@
 <?php 
+include("header.php");
 require("connect-db.php");
 require("favorites-db.php");
 
-$list_of_snacks = getAllFavorites(); 
+// If the user is not logged in, redirect them to the signin page
+if (!isset($_SESSION['Loggedin']) || !$_SESSION['Loggedin'] || !isset($_SESSION['UserID'])){
+    header("location: signin.php");
+}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	if (!empty($_POST['unFavBtn'])) {
-    unfavoriteSnack($_POST['userID'], $_POST['snackId']);
-    $list_of_snacks = getAllFavorites();
-  }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['unFavBtn']) && !empty($_POST['favorite_ID'])) {
+        unfavoriteSnack($_POST['favorite_ID']);
+    }
 }
-else {
-  $list_of_snacks = getAllFavorites();
-}
+
+$list_of_snacks = getAllFavorites($_SESSION['UserID']); 
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,6 @@ else {
   <link rel="stylesheet" href="snack-system.css">  
 </head>
 <body>  
-<?php include("header.php"); ?>
 
 <div class="container">
   <div class="row g-3 mt-2">
@@ -56,7 +57,7 @@ else {
     <td>
       <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
         <input type="submit" value="Unfavorite" name="unFavBtn" class="btn btn-danger btn-sm" onClick="return confirm('Are you sure you want to unfavorite?')"/>
-        <input type="hidden" name="snackId" value="<?php echo $snack['snack_ID']; ?>"/>
+        <input type="hidden" name="favorite_ID" value="<?php echo $snack['favorite_ID']; ?>"/>
       </form>
     </td>
   </tr>

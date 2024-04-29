@@ -40,10 +40,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Password is correct, so we login and start a new session
             session_start();
             
+            $query = "SELECT userID FROM Project_Login WHERE username=:username";
+            $statement = $db->prepare($query);
+            $statement->bindValue(':username', $_SESSION['Username']);
+            $statement->execute();
+            $userID = $statement->fetch()[0];
+            $statement->closeCursor();
             // Store data in session variables
             $_SESSION["Username"] = $username;
             $_SESSION["Loggedin"] = true;
-            
+            $_SESSION["UserID"] = $userID;
+
             // Redirect user to snack page
             header("location: snack.php");
         } else {
