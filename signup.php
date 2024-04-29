@@ -149,7 +149,7 @@ $db->close();
 <body>
 
 <div class="container">
-    <h1>Sign In</h1>
+    <h1>Sign Up</h1>
         <label for="Username">Username:</label>
         <form action="signin.php" method="POST">
         <input type="text" id="username" name="Username" required>
