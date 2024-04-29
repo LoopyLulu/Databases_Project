@@ -37,13 +37,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         $prepared_insert_statement = $db->prepare($insert_statement);
 
-        $hashed_password = crypt(string $password, string ""): string;
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         $prepared_insert_statement->bindValue(':Username', $username);
         $prepared_insert_statement->bindValue(':Password', $hashed_password);
 
         $prepared_insert_statement->execute();
-
 
         $insert_statement2 = "INSERT INTO Project_Login (username) VALUES (:Username)";
 
@@ -52,7 +51,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $prepared_insert_statement2->bindValue(':Username', $username);
 
         $prepared_insert_statement2->execute();
-
 
         header("location: signin.php");
     }
