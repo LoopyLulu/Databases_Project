@@ -8,68 +8,52 @@ $username = "";
 $password = "";
 $username_error_message = "";
 $password_error_message = "";
- 
+
 // After login form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
  
     // Check if the username field is empty
-    if(empty(trim($_POST["Username"]))){
+    if(empty($_POST["Username"])){
         $username_error_message = "Username can not be blank!";
-    }
-    
-    else{
-        $username = trim($_POST["Username"]);
+    } else {
+        $username = $_POST["Username"];
     }
     
     // Check if the password field is empty
-    if(empty(trim($_POST["Password"]))){
+    if(empty($_POST["Password"])){
         $password_error_message = "Password can not be empty!";
-    }
-    
-    else{
-        $password = trim($_POST["Password"]);
+    } else {
+        $password = $_POST["Password"];
     }
     
     // Check the database
     if(empty($username_error_message) && empty($password_error_message)){
 
         $get_hashed_password_statement = "SELECT password FROM Project_Login_Password WHERE username=:UsernameGet";
-
-        $prepared_get_hash_statement = db->prepare($get_hashed_password_statement);
-
+        $prepared_get_hash_statement = $db->prepare($get_hashed_password_statement);
         $prepared_get_hash_statement-> bindValue(':UsernameGet', $username);
-
         $prepared_get_hash_statement->execute();
-
         $hash_pass_from_database = $prepared_get_hash_statement->fetch();
-            
-        if(password_verify($password, $hash_pass_from_database)){
+        $prepared_get_hash_statement->closeCursor();
+
+        if(password_verify($password, $hash_pass_from_database[0])){
             // Password is correct, so we login and start a new session
             session_start();
             
             // Store data in session variables
-            $_SESSION["Username"] = $username;                                                    
-            $_SESSION["Loggedin"] = true;                                                    
+            $_SESSION["Username"] = $username;
+            $_SESSION["Loggedin"] = true;
             
             // Redirect user to snack page
             header("location: snack.php");
-        }
-            
-        else{
+        } else {
             // Username is not valid
             echo "Invalid username or password.";
         }
 
-    // Close statement
-    $prepared_get_hash_statement->close();
-    }
-
-    else{
+    } else {
         echo "Oops! Something went wrong. Please try again later.";
     }
-  
-// Close connection
-$db->close();
 }
 ?>
 
@@ -133,7 +117,7 @@ $db->close();
 <div class="container">
     <h1>Sign In</h1>
         <label for="Username">Username:</label>
-        <form action="snack.php" method="POST">
+        <form action="signin.php" method="POST">
         <input type="text" id="username" name="Username" required>
 
         <label for="Password">Password:</label>

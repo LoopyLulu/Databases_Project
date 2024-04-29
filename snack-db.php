@@ -159,26 +159,22 @@ function deleteSnack($snackId)
 function favoriteSnack($snackId)
 {
    global $db;
-   try {
        if (isset($_SESSION['Loggedin']) && $_SESSION['Loggedin']) {
            $query = "SELECT userID FROM Project_Login WHERE username=:username";
            $statement = $db->prepare($query);
            $statement->bindValue(':username', $_SESSION['Username']);
            $statement->execute();
-           $userID = $statement->fetchAll();
+           $userID = $statement->fetch()[0];
            $statement->closeCursor();
 
-           $query1 = "INSERT INTO Project_FavoritesTable (userID, snack_ID) VALUES (:userID, :snackID)";
+           $query1 = "INSERT INTO Project_FavoritesTable (userID, snack_ID) VALUES (:userID, :snack_ID)";
            $statement1 = $db->prepare($query1);
-           $statement1->bindValue(':userId', $userID);
-           $statement1->bindValue(':snackId', $snackId);
+           $statement1->bindValue(':userID', $userID);
+           $statement1->bindValue(':snack_ID', $snackId);
            $statement1->execute();
            $statement1->closeCursor();
        }else{
            echo('Please login to use the favorite function!');
 	}
-   }catch (PDOException $e) {
-       echo "Error: " . $e->getMessage();
-   }
 }
    

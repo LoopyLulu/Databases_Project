@@ -1,3 +1,4 @@
+<?php include("header.php"); ?>
 <?php 
 require("connect-db.php");
 require("snack-db.php");
@@ -62,7 +63,6 @@ else {
   <link rel="stylesheet" href="snack-system.css">  
 </head>
 <body>  
-<?php include("header.php"); ?>
 
 <div class="container">
   <div class="row g-3 mt-2">
