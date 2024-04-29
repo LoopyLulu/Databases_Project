@@ -3,12 +3,14 @@ require("connect-db.php");
 require("snack-db.php");
 
 $snack_to_update = null;
+$allergens = ['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'];
 
 $list_of_snacks = getAllSnacks(); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
     $excludedAllergens = [];
-    foreach (['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'] as $allergen) {
+    //foreach (['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'] as $allergen) {
+    foreach ($allergens as $allergen) {
         if (!empty($_POST[$allergen])) {
             $excludedAllergens[] = $allergen;
         }
@@ -23,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!empty($_POST['addBtn'])) {
       $allergens = isset($_POST['allergens']) ? 1 : 0;
-      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens, $_POST['allergenList']);
+      $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
+      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
       $list_of_snacks = getAllSnacks();
   }
   else if (!empty($_POST['updateBtn'])) {
@@ -31,7 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }   
   else if (!empty($_POST['cofmBtn'])) {
      $allergens = isset($_POST['allergens']) ? 1 : 0;
-     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens, $_POST['allergenList']);
+     $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
+     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
      $list_of_snacks = getAllSnacks();
   }
   else if (!empty($_POST['deleteBtn'])) {
@@ -107,7 +111,6 @@ else {
     <h5>Show snacks that do not include the following:</h5>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <?php
-        $allergens = ['Milk', 'Eggs', 'Fish', 'Shellfish', 'Treenuts', 'Peanuts', 'Wheat', 'Soy', 'Sesame'];
         foreach ($allergens as $allergen) {
             echo '<div class="checkbox">';
             echo '<label><input type="checkbox" name="' . $allergen . '" value="1"> ' . $allergen . '</label>';
