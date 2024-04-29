@@ -1,5 +1,5 @@
-<?php include("header.php"); ?>
-<?php 
+<?php
+include("header.php"); 
 require("connect-db.php");
 require("snack-db.php");
 

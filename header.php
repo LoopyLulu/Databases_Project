@@ -25,6 +25,8 @@ ini_set('display_errors', 'On');
           <?php  } else { ?>                    
             <li class="nav-item">                  
               <a class="nav-link" href="signout.php">Sign out</a>
+            <li class="nav-item">                  
+              <a class="nav-link" href="favorites-page.php">My Favorites</a>
             </li>
           <?php } ?>
         
