@@ -44,14 +44,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $hash_pass_from_database = $prepared_get_hash_statement->fetch();
             
         if(password_verify($password, $hash_pass_from_database)){
-                    // Password is correct, so we login and start a new session
-                    session_start();
-                    
-                    // Store data in session variables
-                    $_SESSION["Username"] = $username;                                                    
-                    
-                    // Redirect user to snack page
-                    header("location: snack.php");
+            // Password is correct, so we login and start a new session
+            session_start();
+            
+            // Store data in session variables
+            $_SESSION["Username"] = $username;                                                    
+            
+            // Redirect user to snack page
+            header("location: snack.php");
         }
             
         else{
@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }
 
     // Close statement
-    $prepared_statement->close();
+    $prepared_get_hash_statement->close();
     }
 
     else{
