@@ -54,7 +54,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     
                     // Store data in session variables
                     $_SESSION["Username"] = $username;   
-                    $_SESSION["Password"] = $password;                                                     
+                    $_SESSION["Password"] = $hashed_password;                                                     
                     
                     // Redirect user to snack page
                     header("location: snack.php");
