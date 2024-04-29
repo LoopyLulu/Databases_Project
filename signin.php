@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Check the database
     if(empty($username_error_message) && empty($password_error_message)){
 
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = $hashed_password = crypt(string $password, string ""): string;
 
         // Search for the username and password
         $select_statement = "SELECT username, password FROM Project_Login_Password WHERE username=:Username AND password=:Password";
