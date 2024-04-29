@@ -2,49 +2,16 @@
 require("connect-db.php");
 require("favorites-db.php");
 
-$snack_to_update = null;
-$allergens = ['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'];
-
-$list_of_snacks = getAllSnacks(); 
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['filterBtn'])) {
-    $excludedAllergens = [];
-    //foreach (['milk', 'eggs', 'fish', 'shellfish', 'tree_nuts', 'peanuts', 'wheat', 'soybeans', 'sesame'] as $allergen) {
-    foreach ($allergens as $allergen) {
-        if (!empty($_POST[$allergen])) {
-            $excludedAllergens[] = $allergen;
-        }
-    }
-    if (!empty($excludedAllergens)) {
-        $list_of_snacks = getFilteredSnacks($excludedAllergens);
-    } else {
-        $list_of_snacks = getAllSnacks();
-    }
-}
+$list_of_snacks = getAllFavorites(); 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if (!empty($_POST['addBtn'])) {
-      $allergens = isset($_POST['allergens']) ? 1 : 0;
-      $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
-      addSnack($_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
-      $list_of_snacks = getAllSnacks();
-  }
-  else if (!empty($_POST['updateBtn'])) {
-      $snack_to_update = getSnackById($_POST['snackId']);
-  }   
-  else if (!empty($_POST['cofmBtn'])) {
-     $allergens = isset($_POST['allergens']) ? 1 : 0;
-     $allergenList = isset($_POST['allergenList']) ? $_POST['allergenList'] : [];
-     updateSnack($_POST['cofm_snackId'], $_POST['snackName'], $_POST['ingredients'], $allergens, $allergenList);
-     $list_of_snacks = getAllSnacks();
-  }
-  else if (!empty($_POST['deleteBtn'])) {
-    deleteSnack($_POST['snackId']);
-    $list_of_snacks = getAllSnacks();
+	if (!empty($_POST['unFavBtn'])) {
+    unfavoriteSnack($_POST['userID'], $_POST['snackId']);
+    $list_of_snacks = getAllFavorites();
   }
 }
 else {
-  $list_of_snacks = getAllSnacks();
+  $list_of_snacks = getAllFavorites();
 }
 ?>
 
